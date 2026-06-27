@@ -1,1 +1,19 @@
-
+               Internet
+                    │
+                    ▼
+             Amazon EC2 (Linux)
+                    │
+        ┌───────────┴───────────┐
+        ▼                       ▼
+ CloudWatch Agent         Systems Manager
+        │
+        ▼
+ Amazon CloudWatch
+        │
+   Dashboards & Alarms
+        │
+        ▼
+     Amazon SNS
+        │
+        ▼
+ Email Notification
