@@ -1,0 +1,102 @@
+# Troubleshooting Guide
+
+## Overview
+
+This guide documents the issues encountered during the deployment of the CloudPulse monitoring environment and the steps taken to diagnose and resolve them. It serves as a reference for common AWS infrastructure and monitoring issues.
+
+---
+
+## Issue 1: Unable to Connect Using EC2 Instance Connect
+
+### Symptoms
+
+* Failed to connect using EC2 Instance Connect.
+* SSH connectivity through PowerShell remained functional.
+
+### Root Cause
+
+The EC2 instance was healthy, but EC2 Instance Connect was unavailable. Direct SSH access was still possible.
+
+### Resolution
+
+1. Verified the EC2 instance was in the **Running** state.
+2. Confirmed the security group allowed inbound SSH (TCP port 22).
+3. Verified the instance had a public IPv4 address.
+4. Connected successfully using SSH from PowerShell with the downloaded key pair.
+
+**Status:** ✅ Resolved
+
+---
+
+## Issue 2: Systems Manager (SSM) Not Connecting
+
+### Symptoms
+
+* CloudWatch remote management failed.
+* Systems Manager could not communicate with the EC2 instance.
+
+### Root Cause
+
+The EC2 instance did not have an IAM role with the required permissions attached.
+
+### Resolution
+
+1. Created the **CloudPulse-EC2-Role** IAM role.
+2. Attached the following IAM policies:
+
+   * `AmazonSSMManagedInstanceCore`
+   * `CloudWatchAgentServerPolicy`
+3. Attached the IAM role to the EC2 instance.
+4. Restarted the Amazon SSM Agent.
+5. Verified the SSM Agent was running successfully.
+
+**Status:** ✅ Resolved
+
+---
+
+## Issue 3: CloudWatch Metrics Not Appearing
+
+### Symptoms
+
+* CloudWatch metrics were not immediately visible after deploying the CloudWatch Agent.
+
+### Root Cause
+
+The CloudWatch Agent required time to initialize and begin publishing metrics.
+
+### Resolution
+
+1. Verified the CloudWatch Agent was installed successfully.
+2. Confirmed the CloudWatch Agent service was running.
+3. Waited for metrics to begin publishing.
+4. Verified metrics appeared under the **CWAgent** namespace.
+
+**Status:** ✅ Resolved
+
+---
+
+## Issue 4: CloudWatch Alarm Validation
+
+### Objective
+
+Validate that CloudWatch alarms and Amazon SNS notifications function correctly.
+
+### Validation Steps
+
+1. Connected to the EC2 instance using SSH.
+2. Generated CPU load using the `stress` utility.
+3. Monitored CloudWatch metrics and dashboard activity.
+4. Confirmed the CPU alarm transitioned from **OK** to **ALARM**.
+5. Verified the Amazon SNS email notification was received.
+
+**Status:** ✅ Successfully Validated
+
+---
+
+## Lessons Learned
+
+* Verify IAM permissions before troubleshooting AWS services.
+* Systems Manager requires both a running SSM Agent and the appropriate IAM role.
+* CloudWatch metrics may take several minutes to begin publishing after deployment.
+* Monitoring solutions should be validated by generating controlled test conditions.
+* Documenting troubleshooting steps improves repeatability and supports future deployments.
