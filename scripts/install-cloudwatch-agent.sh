@@ -1,3 +1,5 @@
+install-cloudwatch-agent.sh
+
 #!/bin/bash
 
 echo "Updating system packages..."
