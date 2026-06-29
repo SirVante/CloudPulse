@@ -1,4 +1,0 @@
-scripts/
-├── install-cloudwatch-agent.sh
-├── cpu-stress-test.sh
-└── system-health-check.sh
